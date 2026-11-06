@@ -294,7 +294,7 @@
                     Address: Illambazar, Dubrajpur Road, Birbhum<br>
                     Contact: +91 8642067952<br>
                     <strong>BIS HALLMARK NO : HM/C-5590156520</strong><br>
-                    <strong>GSTIN : 19BGHGHGHUHG464</strong>
+                    <strong>GSTIN : 19BDZPM4112N1ZS</strong>
                 </div>
                 <div style="font-size: 11pt; text-align: right;"><strong>BILL NO:</strong> <span id="outBillNo" style="color:red;"></span></div>
             </div>
@@ -441,6 +441,11 @@
             
             const sub = items.reduce((a, b) => a + b.rowTotal, 0);
             
+            // Calculate metal value total (Net Wt * Rate) for CGST & SGST
+            const metalTotal = items.reduce((a, b) => a + (b.net * b.rate), 0);
+            const cgst = metalTotal * 0.015;
+            const sgst = metalTotal * 0.015;
+            
             let calculatedCustomAmt = 0;
             if (customName !== "" && customAmount > 0) {
                 document.getElementById('outCustomLabel').innerText = customName.toUpperCase() + ":";
@@ -451,10 +456,7 @@
                 document.getElementById('outCustomRow').style.display = "none";
             }
 
-            const taxableAmt = sub + hallmark + calculatedCustomAmt + cardCharge + makingGst - discount;
-            const cgst = taxableAmt * 0.015;
-            const sgst = taxableAmt * 0.015;
-            const netAmount = Math.round(taxableAmt + cgst + sgst);
+            const netAmount = Math.round(sub + hallmark + calculatedCustomAmt + cardCharge + makingGst + cgst + sgst - discount);
 
             document.getElementById('outBillNo').innerText = document.getElementById('inBillNo').value;
             document.getElementById('outName').innerText = document.getElementById('inName').value;
